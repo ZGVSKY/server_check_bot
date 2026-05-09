@@ -48,6 +48,36 @@ async def cmd_volume(message: types.Message):
     else:
         await message.answer("Помилка при зміні гучності. ❌")
 
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
+
+class CommandStates(StatesGroup):
+    waiting_for_command = State()
+
+@router.message(F.text == "Командний рядок", HasPermission("full"))
+async def start_command_prompt(message: types.Message, state: FSMContext):
+    await message.answer("🖥 Введіть команду для виконання в терміналі (або 'Скасувати'):")
+    await state.set_state(CommandStates.waiting_for_command)
+
+@router.message(CommandStates.waiting_for_command, HasPermission("full"))
+async def execute_command_handler(message: types.Message, state: FSMContext):
+    if message.text.lower() == "скасувати":
+        await state.clear()
+        await message.answer("Дію скасовано.", reply_markup=main_keyboard(is_superuser=(message.from_user.id == config.admin_id)))
+        return
+
+    command = message.text
+    await message.answer(f"⏳ Виконую: `{command}`...", parse_mode="Markdown")
+    
+    result = await pc_service.execute_command(command)
+    
+    # Обрізаємо довгий вивід
+    if len(result) > 4000:
+        result = result[:4000] + "\n... (вивід обрізано)"
+    
+    await message.answer(f"📄 **Результат:**\n```\n{result}\n```", parse_mode="Markdown")
+    await state.clear()
+
 from utils.image_gen import create_stats_image
 
 @router.message(Command("stats"), HasPermission("stats_only"))

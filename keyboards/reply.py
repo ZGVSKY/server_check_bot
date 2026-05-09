@@ -4,6 +4,7 @@ def main_keyboard(is_superuser: bool = False):
     buttons = [
         [KeyboardButton(text="Статистика ПК"), KeyboardButton(text="Зробити скріншот")],
         [KeyboardButton(text="Гучність -"), KeyboardButton(text="Без звуку"), KeyboardButton(text="Гучність +")],
+        [KeyboardButton(text="Командний рядок")],
         [KeyboardButton(text="Вимкнути ПК"), KeyboardButton(text="Перезавантажити ПК")],
     ]
     
