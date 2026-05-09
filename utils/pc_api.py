@@ -68,7 +68,16 @@ class PCService:
         }
 
     async def execute_command(self, command: str) -> str:
-        # ... (код вище)
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(f"{self.base_url}/api/v1/execute", json={"command": command}) as resp:
+                    if resp.status == 200:
+                        data = await resp.json()
+                        return data.get("output", "Вивід порожній")
+                    return f"Помилка API: {resp.status}"
+        except Exception as e:
+            logging.error(f"API Execute Error: {e}")
+            return f"Помилка зв'язку з API: {e}"
 
     async def launch_app(self, path: str) -> bool:
         try:
