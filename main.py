@@ -8,6 +8,7 @@ from aiogram.enums import ParseMode
 
 from config import config
 from handlers import routers
+from utils.tasks import monitor_pc
 
 async def main():
     logging.basicConfig(
@@ -25,6 +26,9 @@ async def main():
     # Register all routers
     for router in routers:
         dp.include_router(router)
+
+    # Start monitoring task
+    asyncio.create_task(monitor_pc(bot))
 
     try:
         await dp.start_polling(bot)
