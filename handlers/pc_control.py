@@ -1,15 +1,12 @@
 from aiogram import Router, types, F
 from aiogram.filters import Command
-from filters.is_admin import IsAdmin
+from filters.permissions import HasPermission
 from utils.pc_api import pc_service
 
 router = Router()
-# Застосовуємо фільтр IsAdmin до всього роутера, 
-# щоб тільки адмін міг керувати ПК
-router.message.filter(IsAdmin())
 
-@router.message(Command("shutdown"))
-@router.message(F.text == "Вимкнути ПК")
+@router.message(Command("shutdown"), HasPermission("full"))
+@router.message(F.text == "Вимкнути ПК", HasPermission("full"))
 async def cmd_shutdown(message: types.Message):
     success = await pc_service.shutdown()
     if success:
@@ -17,8 +14,8 @@ async def cmd_shutdown(message: types.Message):
     else:
         await message.answer("Помилка при спробі вимкнути ПК. ❌")
 
-@router.message(Command("reboot"))
-@router.message(F.text == "Перезавантажити ПК")
+@router.message(Command("reboot"), HasPermission("full"))
+@router.message(F.text == "Перезавантажити ПК", HasPermission("full"))
 async def cmd_reboot(message: types.Message):
     success = await pc_service.reboot()
     if success:
@@ -26,8 +23,8 @@ async def cmd_reboot(message: types.Message):
     else:
         await message.answer("Помилка при спробі перезавантажити ПК. ❌")
 
-@router.message(Command("screenshot"))
-@router.message(F.text == "Зробити скріншот")
+@router.message(Command("screenshot"), HasPermission("full"))
+@router.message(F.text == "Зробити скріншот", HasPermission("full"))
 async def cmd_screenshot(message: types.Message):
     await message.answer("📸 Роблю скріншот...")
     path = await pc_service.take_screenshot()
@@ -37,7 +34,7 @@ async def cmd_screenshot(message: types.Message):
     else:
         await message.answer("❌ Не вдалося отримати скріншот. Перевірте, чи працює API.")
 
-@router.message(F.text.in_(["Гучність +", "Гучність -", "Без звуку"]))
+@router.message(F.text.in_(["Гучність +", "Гучність -", "Без звуку"]), HasPermission("full"))
 async def cmd_volume(message: types.Message):
     actions = {
         "Гучність +": "up",
@@ -53,8 +50,8 @@ async def cmd_volume(message: types.Message):
 
 from utils.image_gen import create_stats_image
 
-@router.message(Command("stats"))
-@router.message(F.text == "Статистика ПК")
+@router.message(Command("stats"), HasPermission("stats_only"))
+@router.message(F.text == "Статистика ПК", HasPermission("stats_only"))
 async def cmd_stats(message: types.Message):
     await message.answer("🔄 Отримую дані...")
     stats_data = await pc_service.get_stats()
