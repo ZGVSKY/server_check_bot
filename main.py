@@ -27,6 +27,9 @@ async def main():
     for router in routers:
         dp.include_router(router)
 
+    # Delete webhook if it was previously set
+    await bot.delete_webhook(drop_pending_updates=True)
+
     # Start monitoring task
     asyncio.create_task(monitor_pc(bot))
 
