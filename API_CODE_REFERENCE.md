@@ -199,3 +199,28 @@ async def launch_app(req: LaunchRequest):
         return {"status": "success", "message": "App launched"}
     raise HTTPException(status_code=500, detail="Failed to launch app")
 ```
+
+## 3. README.md для API проекту
+
+```markdown
+# PC Control API ⚙️
+
+REST API для дистанційного керування системними функціями комп'ютера. Працює в парі з Telegram ботом.
+
+## 🚀 Ендпоінти
+- `GET  /api/v1/stats`: Стан системи (CPU, RAM, Temp).
+- `GET  /api/v1/screenshot`: Скріншот екрана.
+- `POST /api/v1/volume`: Керування звуком (up/down/mute).
+- `POST /api/v1/execute`: Виконання команд у терміналі.
+- `POST /api/v1/launch`: Запуск програм за шляхом.
+- `POST /api/v1/shutdown`: Вимкнення ПК.
+- `POST /api/v1/reboot`: Перезавантаження ПК.
+
+## 🛠 Запуск
+1. Встановіть залежності: `pip install fastapi uvicorn psutil pyautogui Pillow wmi pywin32`
+2. Запустіть сервер: `python main.py`
+3. Swagger UI доступний за адресою: `http://localhost:5000/docs`
+
+## 📄 Ліцензія
+MIT (Вільний код)
+```
