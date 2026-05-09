@@ -1,39 +1,70 @@
 import aiohttp
 from typing import Dict, Any
+import logging
 
 class PCService:
     def __init__(self, base_url: str = "http://localhost:5000"):
         self.base_url = base_url
 
     async def shutdown(self) -> bool:
-        # TODO: Implement actual API call to shutdown PC
-        # async with aiohttp.ClientSession() as session:
-        #     async with session.post(f"{self.base_url}/shutdown") as resp:
-        #         return resp.status == 200
-        return True
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(f"{self.base_url}/api/v1/shutdown") as resp:
+                    return resp.status == 200
+        except Exception as e:
+            logging.error(f"API Shutdown Error: {e}")
+            return False
 
     async def reboot(self) -> bool:
-        # TODO: Implement actual API call to reboot PC
-        return True
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(f"{self.base_url}/api/v1/reboot") as resp:
+                    return resp.status == 200
+        except Exception as e:
+            logging.error(f"API Reboot Error: {e}")
+            return False
 
     async def set_volume(self, action: str) -> bool:
         # action: "up", "down", "mute"
-        # TODO: Implement actual API call to control volume
-        return True
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(f"{self.base_url}/api/v1/volume", json={"action": action}) as resp:
+                    return resp.status == 200
+        except Exception as e:
+            logging.error(f"API Volume Error: {e}")
+            return False
 
     async def take_screenshot(self) -> str:
-        # TODO: Implement actual API call to take screenshot
-        # Should return path to the saved image or bytes
-        return "path/to/screenshot.png"
+        # Returns path to the temporarily saved image or empty string
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"{self.base_url}/api/v1/screenshot") as resp:
+                    if resp.status == 200:
+                        import os
+                        os.makedirs("temp", exist_ok=True)
+                        file_path = os.path.join("temp", "bot_screenshot.png")
+                        with open(file_path, "wb") as f:
+                            f.write(await resp.read())
+                        return file_path
+        except Exception as e:
+            logging.error(f"API Screenshot Error: {e}")
+        return ""
 
     async def get_stats(self) -> Dict[str, Any]:
-        # TODO: Implement actual API call to get stats
-        # Placeholder for future API response
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"{self.base_url}/api/v1/stats") as resp:
+                    if resp.status == 200:
+                        return await resp.json()
+        except Exception as e:
+            logging.error(f"API Stats Error: {e}")
+            
+        # Fallback values if API is offline
         return {
-            "cpu_usage": 45,
-            "ram_usage": 60,
-            "temp": 55,
-            "uptime": "2h 15m"
+            "cpu_usage": 0,
+            "ram_usage": 0,
+            "temp": 0,
+            "uptime": "N/A"
         }
 
 pc_service = PCService()
