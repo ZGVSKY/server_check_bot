@@ -29,3 +29,18 @@ def get_user_edit_kb(user_id: str):
         [InlineKeyboardButton(text="Видалити доступ", callback_data=f"perm:unauthorized:{user_id}")],
         [InlineKeyboardButton(text="⬅️ Назад", callback_data="manage_users")]
     ])
+
+def get_apps_kb(apps: list):
+    buttons = []
+    for idx, app in enumerate(apps):
+        buttons.append([InlineKeyboardButton(text=f"🚀 {app['name']}", callback_data=f"launch:{idx}")])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+def get_apps_manage_kb(apps: list):
+    buttons = []
+    for idx, app in enumerate(apps):
+        buttons.append([
+            InlineKeyboardButton(text=f"❌ {app['name']}", callback_data=f"del_app:{idx}")
+        ])
+    buttons.append([InlineKeyboardButton(text="⬅️ Назад", callback_data="back_to_main")])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
