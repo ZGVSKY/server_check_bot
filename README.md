@@ -29,7 +29,7 @@
 
 2. **Встановіть залежності**:
    ```bash
-   pip install aiogram pydantic-settings python-dotenv aiohttp
+   pip install -r requirements.txt
    ```
 
 3. **Налаштуйте середовище**:

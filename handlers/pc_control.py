@@ -51,25 +51,20 @@ async def cmd_volume(message: types.Message):
     else:
         await message.answer("Помилка при зміні гучності. ❌")
 
+from utils.image_gen import create_stats_image
+
 @router.message(Command("stats"))
 @router.message(F.text == "Статистика ПК")
 async def cmd_stats(message: types.Message):
+    await message.answer("🔄 Отримую дані...")
     stats_data = await pc_service.get_stats()
     
-    # TODO: Реалізувати генерацію картинки на основі stats_data
-    # 1. Отримати дані з stats_data (json)
-    # 2. Використати бібліотеку Pillow або подібну для малювання графіків/тексту
-    # 3. Надіслати картинку як InputFile
+    # Генеруємо картинку
+    image_path = create_stats_image(stats_data)
     
-    # Тимчасова відповідь текстом
-    stats_text = (
-        "📊 **Статистика ПК**\n\n"
-        f"CPU: {stats_data['cpu_usage']}%\n"
-        f"RAM: {stats_data['ram_usage']}%\n"
-        f"Temp: {stats_data['temp']}°C\n"
-        f"Uptime: {stats_data['uptime']}"
+    photo = types.FSInputFile(image_path)
+    await message.answer_photo(
+        photo=photo, 
+        caption=f"📊 **Статистика ПК**\nПоточний стан на {stats_data.get('uptime')}",
+        parse_mode="Markdown"
     )
-    
-    await message.answer(stats_text, parse_mode="Markdown")
-    # Після реалізації генерації картинки:
-    # await message.answer_photo(photo=generated_image, caption="Поточна статистика")
