@@ -25,7 +25,7 @@
    pip install -r requirements.txt
    ```
 1.1 **Встановіть API**
-   ``` ```
+   ```https://github.com/ZGVSKY/server_check_bot_API ```
 
 2. **Налаштуйте `.env`**:
    Створіть файл `.env` у корені:
