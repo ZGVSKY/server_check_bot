@@ -26,6 +26,29 @@ async def cmd_reboot(message: types.Message):
     else:
         await message.answer("Помилка при спробі перезавантажити ПК. ❌")
 
+@router.message(Command("screenshot"))
+@router.message(F.text == "Зробити скріншот")
+async def cmd_screenshot(message: types.Message):
+    # TODO: Реалізувати отримання реального скріншота через API
+    await message.answer("Запит на скріншот надіслано... 📸")
+    # path = await pc_service.take_screenshot()
+    # photo = types.FSInputFile(path)
+    # await message.answer_photo(photo=photo, caption="Скріншот робочого столу")
+
+@router.message(F.text.in_(["Гучність +", "Гучність -", "Без звуку"]))
+async def cmd_volume(message: types.Message):
+    actions = {
+        "Гучність +": "up",
+        "Гучність -": "down",
+        "Без звуку": "mute"
+    }
+    action = actions[message.text]
+    success = await pc_service.set_volume(action)
+    if success:
+        await message.answer(f"Дія '{message.text}' виконана успішно! 🔊")
+    else:
+        await message.answer("Помилка при зміні гучності. ❌")
+
 @router.message(Command("stats"))
 @router.message(F.text == "Статистика ПК")
 async def cmd_stats(message: types.Message):

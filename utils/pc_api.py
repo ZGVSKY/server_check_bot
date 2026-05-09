@@ -16,6 +16,16 @@ class PCService:
         # TODO: Implement actual API call to reboot PC
         return True
 
+    async def set_volume(self, action: str) -> bool:
+        # action: "up", "down", "mute"
+        # TODO: Implement actual API call to control volume
+        return True
+
+    async def take_screenshot(self) -> str:
+        # TODO: Implement actual API call to take screenshot
+        # Should return path to the saved image or bytes
+        return "path/to/screenshot.png"
+
     async def get_stats(self) -> Dict[str, Any]:
         # TODO: Implement actual API call to get stats
         # Placeholder for future API response
